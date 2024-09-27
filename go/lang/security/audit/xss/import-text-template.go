@@ -2,9 +2,9 @@
 
 package main
 
-// ruleid: import-text-template
 import (
-	"net/http"
+  "net/http"
+  // ruleid: import-text-template
   "text/template"
   "encoding/json"
   "io/ioutil"

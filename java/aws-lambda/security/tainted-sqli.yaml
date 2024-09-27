@@ -9,13 +9,13 @@ rules:
   mode: taint
   pattern-sources:
   - patterns:
-    - pattern: $EVENT
+    - focus-metavariable: $EVENT
     - pattern-either:
-      - pattern-inside: |
+      - pattern: |
           $HANDLERTYPE $HANDLER($TYPE $EVENT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }
-      - pattern-inside: |
+      - pattern: |
           $HANDLERTYPE $HANDLER(InputStream $EVENT, OutputStream $OUT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }
@@ -46,7 +46,9 @@ rules:
             regex: (?i)(^SELECT.* | ^INSERT.* | ^UPDATE.*)
         - metavariable-regex:
             metavariable: $SQLCMD
-            regex: (execute|query|executeUpdate)
+            regex: (execute|query|executeUpdate|batchUpdate)
+  options:
+    interfile: true
   metadata:
     category: security
     technology:
@@ -67,4 +69,4 @@ rules:
     likelihood: MEDIUM
     impact: HIGH
     confidence: MEDIUM
-    deepsemgrep: true
+    interfile: true

@@ -2,8 +2,10 @@ rules:
 - id: express-insecure-template-usage
   message: User data from `$REQ` is being compiled into the template, which can lead to a Server Side
     Template Injection (SSTI) vulnerability.
+  options:
+    interfile: true
   metadata:
-    deepsemgrep: true
+    interfile: true
     category: security
     cwe:
     - 'CWE-1336: Improper Neutralization of Special Elements Used in a Template Engine'
@@ -39,6 +41,10 @@ rules:
   - typescript
   severity: WARNING
   mode: taint
+  pattern-propagators:
+  - pattern: $MODEL.$FIND($E).then((...,$S,...)=>{...})
+    from: $E
+    to: $S
   pattern-sources:
   - patterns:
     - pattern-either:

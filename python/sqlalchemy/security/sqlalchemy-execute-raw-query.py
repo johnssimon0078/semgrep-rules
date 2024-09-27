@@ -32,32 +32,34 @@ engine.execute(f"INSERT INTO person (name) VALUES ('{name}')")
 
 # String concatenation using + operator
 engine = create_engine('postgresql://user@localhost/database')
-# ruleid: sqlalchemy-execute-raw-query
 query = "INSERT INTO person (name) VALUES ('" + name + "')"
+# ruleid: sqlalchemy-execute-raw-query
 engine.execute(query)
 
 # String formating using % operator (old style)
 engine = create_engine('postgresql://user@localhost/database')
-# ruleid: sqlalchemy-execute-raw-query
 query = "INSERT INTO person (name) VALUES ('%s')" % (name)
+# ruleid: sqlalchemy-execute-raw-query
 engine.execute(query)
 
 # String formating (new style)
 engine = create_engine('postgresql://user@localhost/database')
-# ruleid: sqlalchemy-execute-raw-query
+
 query = "INSERT INTO person (name) VALUES ('{}')".format(name)
+# ruleid: sqlalchemy-execute-raw-query
 engine.execute(query)
 
 # String formating using fstrings
 engine = create_engine('postgresql://user@localhost/database')
-# ruleid: sqlalchemy-execute-raw-query
+
 query = f"INSERT INTO person (name) VALUES ('{name}')"
+# ruleid: sqlalchemy-execute-raw-query
 engine.execute(query)
 
 # fstrings
 engine = create_engine('postgresql://user@localhost/database')
-# ruleid: sqlalchemy-execute-raw-query
 query: str = f"INSERT INTO person (name) VALUES ('{name}')"
+# ruleid: sqlalchemy-execute-raw-query
 engine.execute(query)
 
 # Query without concatenation
@@ -128,58 +130,60 @@ with engine.connect() as connection:
 # Execute query in With block from variable set by string concatenation using + operator
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
     query = "INSERT INTO person (name) VALUES ('" + name + "')"
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 # Execute query in With block from variable (type) set by String concatenation using + operator
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
     query: str = "INSERT INTO person (name) VALUES ('" + name + "')"
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 
 # Execute query in With block from variable set by String formating using % operator (old style)
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
     query = "INSERT INTO person (name) VALUES ('%s')" % (name)
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 # Execute query in With block from variable (type) set by String formating using % operator (old style)
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
     query: str = "INSERT INTO person (name) VALUES ('%s')" % (name)
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 # Execute query in With block from variable set by String formating (new style)
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
     query = "INSERT INTO person (name) VALUES ('{}')".format(name)
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 # Execute query in With block from variable (typed) set by String formating (new style)
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
     query: str = "INSERT INTO person (name) VALUES ('{}')".format(name)
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 # Execute query in With block from variable set by String concatenation  fstrings
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
+    
     query = f"INSERT INTO person (name) VALUES ('{name}')"
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 # Execute query in With block from variable (typed) set by String concatenation  fstrings
 engine = create_engine('postgresql://user@localhost/database')
 with engine.connect() as connection:
-    # ruleid: sqlalchemy-execute-raw-query
+    
     query: str = f"INSERT INTO person (name) VALUES ('{name}')"
+    # ruleid: sqlalchemy-execute-raw-query
     connection.execute(query)
 
 ########################################################################
@@ -194,6 +198,7 @@ connection.execute(stmt, name='Frodon Sacquet')
 # ok: sqlalchemy-execute-raw-query
 engine = create_engine('postgresql://user@localhost/database')
 query = select(literal_column("users.fullname", String) + ', ' + literal_column("addresses.email_address").label("title")).where(and_(literal_column("users.id") == literal_column("addresses.user_id"), text("users.name BETWEEN 'm' AND 'z'"), text("(addresses.email_address LIKE :x OR addresses.email_address LIKE :y)"))).select_from(table('users')).select_from(table('addresses'))
+# deepruleid: sqlalchemy-execute-raw-query
 conn.execute(query, {"x":"%@aol.com", "y":"%@msn.com"}).fetchall()
 
 
@@ -234,10 +239,10 @@ with engine.connect() as connection:
   meta = MetaData()
   meta.reflect(bind=connection)
   product_table = meta.tables['product']
-  # ruleid: sqlalchemy-execute-raw-query
   stmt = insert(product_table) + 'test'
   values = [
       {field_name: 'hazelnut', field_price: 5},
       {field_name: 'banana', field_price: 8}
   ]
+  # ruleid: sqlalchemy-execute-raw-query
   connection.execute(stmt, values)

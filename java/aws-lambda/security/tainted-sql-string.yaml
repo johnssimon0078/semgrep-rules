@@ -9,6 +9,8 @@ rules:
     of the database. Instead, use a parameterized query which is available
     by default in most database engines. Alternatively, consider using an
     object-relational mapper (ORM) such as Sequelize which will protect your queries.
+  options:
+    interfile: true
   metadata:
     references:
     - https://owasp.org/www-community/attacks/SQL_Injection
@@ -27,17 +29,17 @@ rules:
     likelihood: MEDIUM
     impact: HIGH
     confidence: MEDIUM
-    deepsemgrep: true
+    interfile: true
   mode: taint
   pattern-sources:
   - patterns:
-    - pattern: $EVENT
+    - focus-metavariable: $EVENT
     - pattern-either:
-      - pattern-inside: |
+      - pattern: |
           $HANDLERTYPE $HANDLER($TYPE $EVENT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }
-      - pattern-inside: |
+      - pattern: |
           $HANDLERTYPE $HANDLER(InputStream $EVENT, OutputStream $OUT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }

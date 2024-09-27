@@ -1,16 +1,16 @@
 rules:
 - id: hardcoded-jwt-secret
   message: >-
-    A hard-coded credential was detected. It is not recommended  to store credentials in source-code,
+    A hard-coded credential was detected. It is not recommended to store credentials in source-code,
     as this risks secrets
-    being leaked and used by either an internal or external malicious adversary.  It is recommended to
-    use environment variables to  securely provide credentials or retrieve credentials from  a secure
+    being leaked and used by either an internal or external malicious adversary. It is recommended to
+    use environment variables to securely provide credentials or retrieve credentials from a secure
     vault or HSM (Hardware Security Module).
   metadata:
     cwe:
     - 'CWE-798: Use of Hard-coded Credentials'
     references:
-    - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_CheatSheet.html
+    - https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
     owasp:
     - A07:2021 - Identification and Authentication Failures
     asvs:
@@ -36,23 +36,17 @@ rules:
   severity: WARNING
   mode: taint
   pattern-sources:
-  - patterns:
-    - pattern-either:
-      - patterns:
+    - patterns:
+        - pattern: |
+            $X = '...' 
+        - pattern: |
+            $X = '$Y' 
+    - patterns:
+      - pattern-either: 
         - pattern-inside: |
-            $VALUE = '$Y' 
-            ...
-        - pattern: $VALUE
-      - pattern-inside: $JWT.sign($VALUE, '$Y',...)
-      - pattern-inside: $JWT.verify($VALUE, '$Y',...)
-      - patterns:
+            $JWT.sign($DATA,"...",...);
         - pattern-inside: |
-            $SECRET = "$Y"
-            ...
-            class $FUNC {
-              ...
-            }
-        - pattern: $SECRET
+            $JWT.verify($DATA,"...",...);
   pattern-sinks:
   - patterns:
     - pattern-either:

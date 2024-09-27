@@ -4,8 +4,10 @@ rules:
     Make sure that unverified user data can not reach the XML Parser, as it
     can result in XML External or Internal Entity (XXE) Processing
     vulnerabilities.
+  options:
+    interfile: true
   metadata:
-    deepsemgrep: true
+    interfile: true
     owasp:
     - A04:2017 - XML External Entities (XXE)
     - A05:2021 - Security Misconfiguration
@@ -82,6 +84,6 @@ rules:
           $PARSER = new $XML.Parser(...);
           ...
     - pattern-either:
-      - pattern-inside: $PARSER.parse($QUERY)
+      - pattern: $PARSER.parse($QUERY)
       - pattern: $PARSER.write($QUERY)
-    - pattern: $QUERY
+    - focus-metavariable: $QUERY

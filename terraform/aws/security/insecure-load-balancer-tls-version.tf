@@ -137,6 +137,20 @@ resource "aws_alb_listener" "https_fs_1_2" {
   }
 }
 
+resource "aws_lb_target_group" "foo" {
+    name = "foo"
+    port = 80
+    # ok: insecure-load-balancer-tls-version
+    protocol = "HTTP"
+    target_type = "instance"
+    vpc_id   = data.aws_vpc.bar
+    deregistration_delay = 60
+
+   health_check { 
+     #....
+   }
+}
+
 # failure
 
 resource "aws_lb_listener" "http" {
@@ -185,6 +199,20 @@ resource "aws_alb_listener" "tls_fs_1_1" {
   port              = "8080"
   # ruleid: insecure-load-balancer-tls-version
   ssl_policy        = "ELBSecurityPolicy-FS-1-1-2019-08"
+  certificate_arn   = var.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = var.aws_lb_target_group_arn
+  }
+}
+
+resource "aws_alb_listener" "tls_1_3" {
+  load_balancer_arn = var.aws_lb_arn
+  protocol          = "TLS"
+  port              = "8080"
+  # ok: insecure-load-balancer-tls-version
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-068"
   certificate_arn   = var.certificate_arn
 
   default_action {

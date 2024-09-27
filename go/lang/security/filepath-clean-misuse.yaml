@@ -31,6 +31,8 @@ rules:
     - pattern: |
         "/" + ...
   fix: filepath.FromSlash(filepath.Clean("/"+strings.Trim($...INNER, "/")))
+  options:
+    interfile: true
   metadata:
     references:
     - https://pkg.go.dev/path#Clean
@@ -53,3 +55,4 @@ rules:
     likelihood: MEDIUM
     impact: MEDIUM
     confidence: MEDIUM
+    interfile: true

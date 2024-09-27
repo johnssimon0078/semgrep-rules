@@ -4,8 +4,10 @@ rules:
     Found data from an Express or Next web request flowing to `eval`. If this data is user-controllable
     this can lead to execution of arbitrary system commands in the context of your application process.
     Avoid `eval` whenever possible.
+  options:
+    interfile: true
   metadata:
-    deepsemgrep: true
+    interfile: true
     confidence: HIGH
     owasp:
     - A03:2021 - Injection

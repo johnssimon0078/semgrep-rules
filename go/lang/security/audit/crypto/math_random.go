@@ -2,7 +2,14 @@ package main
 
 import (
 	"crypto/rand"
+	// ruleid: math-random-used
 	mrand "math/rand"
+	// ruleid: math-random-used
+	mrand "math/rand/v2"
+	// ruleid: math-random-used
+	mrand "math/rand/v222"
+	// ok: math-random-used
+	mrand "math/rand/something"
 )
 
 func main() {
@@ -13,7 +20,7 @@ func main() {
 }
 
 func main0() {
-	// ruleid: math-random-used
+	// ok: math-random-used
 	bad, _ := mrand.Read(nil)
 	println(bad)
 }
@@ -25,7 +32,7 @@ func main1() {
 }
 
 func main2() {
-	// ruleid: math-random-used
+	// ok: math-random-used
 	bad := mrand.Int()
 	println(bad)
 }

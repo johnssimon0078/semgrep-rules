@@ -9,6 +9,8 @@ rules:
     or manipulate data from the database.
     Instead, use prepared statements (`db.Query("SELECT * FROM t WHERE id = ?", id)`)
     or a safe library.
+  options:
+    interfile: true
   metadata:
     cwe:
     - "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
@@ -28,6 +30,7 @@ rules:
     - vuln
     likelihood: HIGH
     impact: MEDIUM
+    interfile: true
   mode: taint
   severity: ERROR
   pattern-sources:
@@ -44,8 +47,24 @@ rules:
   - patterns:
     - pattern-either:
       - patterns:
-        - pattern: |
-            "$SQLSTR" + ...
+        - pattern-either:
+          - pattern: |
+              "$SQLSTR" + ...
+          - patterns:
+            - pattern-inside: |
+                $VAR = "$SQLSTR";
+                ...
+            - pattern: $VAR += ...
+          - patterns:
+            - pattern-inside: |
+                var $SB strings.Builder
+                ...
+            - pattern-inside: |
+                $SB.WriteString("$SQLSTR")
+                ...
+                $SB.String(...)
+            - pattern: |
+                $SB.WriteString(...)
         - metavariable-regex:
             metavariable: $SQLSTR
             regex: (?i)(select|delete|insert|create|update|alter|drop).*
@@ -58,4 +77,7 @@ rules:
             metavariable: $SQLSTR
             regex: \s*(?i)(select|delete|insert|create|update|alter|drop)\b.*%(v|s|q).*
   pattern-sanitizers:
-  - pattern: strconv.Atoi(...)
+  - pattern-either:
+    - pattern: strconv.Atoi(...)
+    - pattern: |
+        ($X: bool)

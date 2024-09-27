@@ -1,19 +1,21 @@
 rules:
 - id: direct-response-write
   message: >-
-    Detected directly writing to a Response object from user-defined input. This bypasses
-    any HTML escaping and may expose your application to a Cross-Site-scripting
-    (XSS) vulnerability. Instead, use 'resp.render()' to render
-    safely escaped HTML.
+    Detected directly writing to a Response object from user-defined input.
+    This bypasses any HTML escaping and may expose your application to a Cross-Site-scripting
+    (XSS) vulnerability. Instead, use 'resp.render()' to render safely escaped HTML.
+  options:
+    interfile: true
   metadata:
-    deepsemgrep: true
+    interfile: true
     references:
     - https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
     owasp:
     - A07:2017 - Cross-Site Scripting (XSS)
     - A03:2021 - Injection
     cwe:
-    - "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+    - 'CWE-79: Improper Neutralization of Input During Web Page Generation (''Cross-site
+      Scripting'')'
     category: security
     technology:
     - express
@@ -24,6 +26,9 @@ rules:
     likelihood: MEDIUM
     impact: MEDIUM
     confidence: MEDIUM
+    license: Commons Clause License Condition v1.0[LGPL-2.1-only]
+    vulnerability_class:
+    - Cross-Site-Scripting (XSS)
   languages:
   - javascript
   - typescript
@@ -104,11 +109,13 @@ rules:
       - pattern: body
   pattern-sinks:
   - patterns:
+    - pattern-inside: function ... (..., $RES,...) {...}
     - pattern-either:
       - pattern: $RES.write($ARG)
       - pattern: $RES.send($ARG)
     - pattern-not: $RES. ... .set('...'). ... .send($ARG)
     - pattern-not: $RES. ... .type('...'). ... .send($ARG)
+    - pattern-not-inside: $RES.$METHOD({ ... })
     - focus-metavariable: $ARG
   pattern-sanitizers:
   - patterns:
@@ -219,4 +226,14 @@ rules:
     - metavariable-regex:
         metavariable: $F
         regex: (?!.*text/html)
-        
+  - patterns:
+    - pattern-inside: |
+        $X = [...];
+        ...
+    - pattern: |
+        if(<... !$X.includes($SOURCE)...>) {
+            ...
+            return ...
+        }
+        ...
+    - pattern: $SOURCE
